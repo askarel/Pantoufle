@@ -1,0 +1,15 @@
+
+If you ever tried to shoehorn a bunch of operating systems for the netboot
+setup of your hackerspace, you know how painful it can be when distributions
+installation images expect to be alone on the server, and the pain come back
+when you want to update it.
+
+This is an attempt at building a package manager for your netboot setup.
+It will automatically download the latest images and build a nice menu 
+
+The code expect very little dependencies: it requires an internet connection
+to download the images and tools that are installed by default on any linux 
+system or available as busybox applets (tar, gzip, wget,...)
+
+The code is a bunch of shell scripts and should be running on any OpenWRT box
+without extensive modifications.

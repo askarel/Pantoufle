@@ -1,0 +1,4 @@
+#!/bin/sh
+REPO_URL="http://www.kernel.org/pub/linux/utils/boot/syslinux/"
+VER="4.04"
+DLFILE="syslinux-${VER}.tar.gz"

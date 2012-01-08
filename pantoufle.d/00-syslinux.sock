@@ -1,0 +1,32 @@
+#!/bin/sh
+
+ME=$(basename $0)
+REPO_URL="http://www.kernel.org/pub/linux/utils/boot/syslinux/"
+VER="4.05"
+DLFILE="syslinux-${VER}.tar.gz"
+MYDIR="$2/$ME"
+MYFILE="$2/$DLFILE"
+MYTARGET="$3/syslinux"
+
+case $1 in
+    "GET") 
+	wget -O "$MYFILE" "$REPO_URL/$DLFILE"
+	;;
+    "UNPACK")
+	mkdir $MYDIR
+	tar -C $MYDIR -xzf $MYFILE
+	rm $MYFILE
+	mkdir $MYTARGET
+	find $MYDIR -type f -name "*.c32" -exec mv {} $MYTARGET \; 
+	find $MYDIR -type f -name "*.com" -exec mv {} $MYTARGET \; 
+	find $MYDIR -type f -name "memdisk" -exec mv {} $MYTARGET \; 
+	find $MYDIR -type f -name "*pxelinux.0" -exec mv {} $3 \; 
+	;;
+    "CONFIG")
+	echo CONFIG
+	;;
+    *)
+	echo "Usage: $ME [GET|UNPACK|CONFIG]" tmpdir
+	exit 1
+	;;
+esac

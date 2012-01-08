@@ -16,4 +16,43 @@
 # from; if not, write to the Free Software Foundation, Inc., 59 Temple
 # Place, Suite 330, Boston, MA  02111-1307   USA
 #
+ME=$(basename $0)
 
+### FIXME: Config option ###
+SOCKDIR="./$ME.d"
+NETBOOTDIR="./NETBOOT"
+### /FIXME ###
+
+# Function to call when we bail out
+die ()
+{
+    echo "$ME: $1" 
+    if [ "_$2" = "_" ]; then
+	exit 1
+	else
+	exit $2
+    fi
+}
+
+TMPDIR=$(mktemp -d /tmp/$ME.XXXXXXXXXX)
+
+test -d $NETBOOTDIR || mkdir $NETBOOTDIR || die "Cannot create target directory"
+
+echo "$ME: Fetching files..."
+for i in $(ls -1 $SOCKDIR/*.sock|sort); do
+    $i GET $TMPDIR
+done
+
+echo "$ME: Unpacking files..."
+for i in $(ls -1 $SOCKDIR/*.sock|sort); do
+    $i UNPACK $TMPDIR $NETBOOTDIR
+done
+
+echo "$ME: Building menu"
+for i in $(ls -1 $SOCKDIR/*.sock|sort); do
+    $i CONFIG
+done
+
+
+# Final cleanup
+#rm -rf $TMPDIR

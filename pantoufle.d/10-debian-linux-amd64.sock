@@ -1,0 +1,32 @@
+#!/bin/sh
+
+ME=$(basename $0)
+VER="squeeze"
+REPO_URL="ftp://ftp.debian.org/debian/dists/$VER/main/installer-amd64/current/images/netboot"
+DLFILE="netboot.tar.gz"
+MYDIR="$2/$ME"
+MYFILE="$2/$ME-$DLFILE"
+MYTARGET="$3"
+
+case $1 in
+    "GET") 
+	wget -O "$MYFILE" "$REPO_URL/$DLFILE"
+	;;
+    "UNPACK")
+	mkdir $MYDIR
+	tar -C $MYDIR -xzf $MYFILE
+	rm $MYFILE
+	rm $MYDIR/pxelinux.0
+	rm $MYDIR/pxelinux.cfg
+	find $MYDIR -type f -name "pxelinux.0" -exec rm {} \; -exec ln -s ../../pxelinux.0 {} \;
+	find $MYDIR -type f -name "vesamenu.c32" -exec rm {}  \; -exec ln -s ../../../syslinux/vesamenu.c32 {} \;
+	cp -r $MYDIR/* $MYTARGET/
+	;;
+    "CONFIG")
+	echo CONFIG
+	;;
+    *)
+	echo "Usage: $ME [GET|UNPACK|CONFIG]" tmpdir
+	exit 1
+	;;
+esac

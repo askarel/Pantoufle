@@ -1,0 +1,29 @@
+#!/bin/sh
+
+ME=$(basename $0)
+VER="4.20"
+REPO_URL="http://www.memtest.org/download/$VER/"
+DLFILE="memtest86+-${VER}.tar.gz"
+MYDIR="$2/$ME"
+MYFILE="$2/$DLFILE"
+MYTARGET="$3/memtest86"
+
+case $1 in
+    "GET") 
+	wget -O "$MYFILE" "$REPO_URL/$DLFILE"
+	;;
+    "UNPACK")
+	mkdir $MYDIR
+	tar -C $MYDIR -xzf $MYFILE
+	rm $MYFILE
+	test -d $MYTARGET || mkdir $MYTARGET
+	find $MYDIR -type f -name "precomp.bin" -exec mv {} "$MYTARGET/memtest86-plus" \; 
+	;;
+    "CONFIG")
+	echo CONFIG
+	;;
+    *)
+	echo "Usage: $ME [GET|UNPACK|CONFIG]" tmpdir
+	exit 1
+	;;
+esac
